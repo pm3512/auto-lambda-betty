@@ -279,3 +279,22 @@ class CIFAR100MTL(CIFAR100):
         self.subset_class = list(self.class_dict.keys())[subset_id]
         self.classes = self.class_dict[self.subset_class]
 
+
+class CIFAR100Multiclass(data.Dataset):
+    def __init__(self, **kwargs):
+        self.sets = [CIFAR100MTL(subset_id=i, **kwargs ) for i in range(20)]
+
+    def __getitem__(self, index):
+        x = [self.sets[i][index][0] for i in range(20)]
+        y = {f'class_{i}': self.sets[i][index][1] for i in range(20)}
+        return x, y
+
+    def __len__(self):
+        return len(self.sets[0])
+    
+class NYUv2Betty(NYUv2):
+    def __init__(self, root, train=True, augmentation=False):
+        super().__init__(root, train, augmentation)
+    
+    def __getitem__(self, index):
+        return super().__getitem__(index)
