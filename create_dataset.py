@@ -293,8 +293,11 @@ class CIFAR100Multiclass(data.Dataset):
         return len(self.sets[0])
     
 class NYUv2Betty(NYUv2):
-    def __init__(self, root, train=True, augmentation=False):
+    def __init__(self, root, train_target, train=True, augmentation=False):
         super().__init__(root, train, augmentation)
+        self.train_tasks = train_target.keys()
     
     def __getitem__(self, index):
-        return super().__getitem__(index)
+        (x, y) = super().__getitem__(index)
+        y = {k: v for k, v in y.items() if k in self.train_tasks}
+        return (x, y)
